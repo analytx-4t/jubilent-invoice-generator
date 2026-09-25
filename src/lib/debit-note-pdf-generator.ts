@@ -11,7 +11,8 @@ import { JubilantDetails } from "@/components/JubilantDetails";
 const generateReferenceDebitNotePDF = (
   data: MergedInvoiceData,
   invoiceType: "main" | "freight",
-  formatNumber: (amount: number) => string
+  formatNumber: (amount: number) => string,
+  debitMonth: string
 ): Blob => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -23,8 +24,8 @@ const generateReferenceDebitNotePDF = (
     ? "We request you to kindly issue a credit note towards the support/reimbursement on account of secondary freight expenses incurred by us for the onward movement of goods."
     : "We request you to kindly issue a credit note towards the support/reimbursement on account of Handling Charges incurred by us for the onward movement of goods.";
   const particulars = isFreight
-    ? "Secondary Freight Support/Reimbursement for the\nmonth…………"
-    : "Handling Charges support/reimbursement for the\nmonth…………";
+    ? `Secondary Freight Support/Reimbursement for the month ${debitMonth}`
+    : `Handling Charges support/reimbursement for the month ${debitMonth}`;
   const amount = isFreight
     ? data.freightBalance
     : (data.loadingCharges || 0) +
@@ -58,8 +59,7 @@ const generateReferenceDebitNotePDF = (
     "The Sales Head",
     "Jubilant Agri & Consumer Products Ltd.",
     "Plot No 142, Chimes, 3rd Floor, Sector 44,",
-    "Gurugram 3rd Floor, Sector -44, Gurugram,",
-    "Haryana-122003",
+    "Gurugram Haryana-122003",
   ].forEach((line, index) => doc.text(line, 20, 67 + index * 5));
 
   doc.text(subject, 20, 105);
@@ -94,7 +94,8 @@ export const generateDebitNotePDF = (
       return generateReferenceDebitNotePDF(
         data,
         invoiceType as "main" | "freight",
-        formatNumber
+        formatNumber,
+        debitMonth
       );
   }
 

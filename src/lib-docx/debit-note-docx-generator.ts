@@ -19,7 +19,8 @@ import type { DOCXMergedInvoiceData } from "../types-docx/invoice-docx";
 const generateReferenceDebitNoteDOCX = async (
   data: DOCXMergedInvoiceData,
   invoiceType: "main" | "freight",
-  formatNumber: (amount: number) => string
+  formatNumber: (amount: number) => string,
+  debitMonth: string
 ): Promise<Blob> => {
   const isFreight = invoiceType === "freight";
   const amount = isFreight
@@ -34,8 +35,8 @@ const generateReferenceDebitNoteDOCX = async (
     ? "We request you to kindly issue a credit note towards the support/reimbursement on account of secondary freight expenses incurred by us for the onward movement of goods."
     : "We request you to kindly issue a credit note towards the support/reimbursement on account of Handling Charges incurred by us for the onward movement of goods.";
   const particulars = isFreight
-    ? "Secondary Freight Support/Reimbursement for the\nmonth…………"
-    : "Handling Charges support/reimbursement for the\nmonth…………";
+    ? `Secondary Freight Support/Reimbursement for the month ${debitMonth}`
+    : `Handling Charges support/reimbursement for the month ${debitMonth}`;
   const text = (value: string, bold = false) =>
     new TextRun({ text: value, bold, font: "Arial", size: 22 });
   const noBorders = {
@@ -68,8 +69,7 @@ const generateReferenceDebitNoteDOCX = async (
           "The Sales Head",
           "Jubilant Agri & Consumer Products Ltd.",
           "Plot No 142, Chimes, 3rd Floor, Sector 44,",
-          "Gurugram 3rd Floor, Sector -44, Gurugram,",
-          "Haryana-122003",
+          "Gurugram Haryana-122003",
         ].map((line) => new Paragraph({ text: line })),
         new Paragraph({ text: subject, spacing: { before: 320, after: 260 } }),
         new Paragraph({ text: "Dear sir/madam,", spacing: { after: 240 } }),
@@ -111,7 +111,8 @@ export const generateDebitNoteDOCX = async (
       return generateReferenceDebitNoteDOCX(
         data,
         invoiceType as "main" | "freight",
-        formatNumber
+        formatNumber,
+        debitMonth
       );
   }
 
