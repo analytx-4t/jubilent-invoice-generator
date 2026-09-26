@@ -52,9 +52,6 @@ const generateReferenceDebitNotePDF = (
 
   doc.setFont("helvetica", "normal");
   doc.text("To,", 20, 58);
-  doc.setFont("helvetica", "bold");
-  doc.text("Dated:", pageWidth - 20, 58, { align: "right" });
-  doc.setFont("helvetica", "normal");
   [
     "The Sales Head",
     "Jubilant Agri & Consumer Products Ltd.",

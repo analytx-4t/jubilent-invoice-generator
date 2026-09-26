@@ -62,7 +62,6 @@ const generateReferenceDebitNoteDOCX = async (
           borders: noBorders,
           rows: [new TableRow({ children: [
             new TableCell({ children: [new Paragraph({ text: "To," })] }),
-            new TableCell({ children: [new Paragraph({ alignment: AlignmentType.RIGHT, children: [text("Dated:", true)] })] }),
           ] })],
         }),
         ...[
