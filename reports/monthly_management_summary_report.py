@@ -6,7 +6,6 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent.parent
-DEFAULT_SOURCE = Path.home() / "Downloads" / "Monthly_Management_Summary_Report.pdf"
 
 
 def load_env_file(path: Path) -> dict[str, str]:
@@ -67,20 +66,18 @@ def send_report(report_pdf: bytes, filename: str, env: dict[str, str]) -> str:
 
 
 def main() -> None:
-    source = Path(sys.argv[1]).expanduser() if len(sys.argv) > 1 else DEFAULT_SOURCE
-    if not source.is_file():
-        raise FileNotFoundError(
-            f"Generated report PDF not found: {source}. "
-            "Pass its path as the first argument."
-        )
-
-    report_pdf = source.read_bytes()
+    filename = (
+        sys.argv[1]
+        if len(sys.argv) > 1
+        else "Monthly_Management_Summary_Report.pdf"
+    )
+    report_pdf = sys.stdin.buffer.read()
     if not report_pdf.startswith(b"%PDF-"):
-        raise ValueError(f"Report is not a valid PDF: {source}")
+        raise ValueError("No valid PDF was provided on standard input.")
 
     env = load_env_file(ROOT / ".env")
-    recipients = send_report(report_pdf, source.name, env)
-    print(f"Report emailed directly without saving a copy: {source.name}")
+    recipients = send_report(report_pdf, filename, env)
+    print(f"Report emailed directly without saving a copy: {filename}")
     print(f"Email accepted by SMTP for: {recipients}")
 
 
