@@ -44,11 +44,16 @@ def send_report(report_pdf: bytes, filename: str, env: dict[str, str]) -> str:
         raise RuntimeError("SMTP username and password must be configured.")
 
     message = EmailMessage()
-    message["Subject"] = "Monthly Management Summary Report"
+    message["Subject"] = "Invoice & Debit Note Generation Report"
     message["From"] = sender
     message["To"] = ", ".join(recipients)
     message.set_content(
-        "Please find the monthly management summary report attached."
+        "Dear Sir/Madam,\n"
+        "Please find attached the Invoice & Debit Note Generation Report for your review.\n"
+        "The report summarizes the invoices and debit notes generated for the reporting period.\n"
+        "Kindly review the attached report at your convenience.\n"
+        "Please contact us if you need any clarification or additional information.\n"
+        "Best regards,"
     )
     message.add_attachment(
         report_pdf,
@@ -66,11 +71,7 @@ def send_report(report_pdf: bytes, filename: str, env: dict[str, str]) -> str:
 
 
 def main() -> None:
-    filename = (
-        sys.argv[1]
-        if len(sys.argv) > 1
-        else "Monthly_Management_Summary_Report.pdf"
-    )
+    filename = "Invoice & Debit Note Generation Report.pdf"
     report_pdf = sys.stdin.buffer.read()
     if not report_pdf.startswith(b"%PDF-"):
         raise ValueError("No valid PDF was provided on standard input.")
